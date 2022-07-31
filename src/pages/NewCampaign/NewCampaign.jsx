@@ -150,7 +150,6 @@ const AddCampaign = () => {
   return (
     <MainLayout
       classes={[styles.container]}
-      isSideMenuVisible
       navbarProps={{
         titleProps: {
           id: "name",

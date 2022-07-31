@@ -87,7 +87,7 @@ const Title = ({
     >
       <div className={styles.top}>
         <div className={styles.fixedWidth}>
-          {isBackIconVisible && <Breadcrumb />}
+          {isBackIconVisible && <Breadcrumb prevRoute={"/"} />}
         </div>
         <input
           id={id}

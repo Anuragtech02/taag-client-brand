@@ -72,7 +72,7 @@ const MoreInformation = ({
         <InformationTag title={"Avg ROI"} value={averageROI} icon={purpleEye} />
       </div>
       <div className={styles.buttons}>
-        {showSearchInput ? (
+        {/* {showSearchInput ? (
           <InputField
             id="search"
             type="search"
@@ -86,7 +86,7 @@ const MoreInformation = ({
           <IconButton onClick={(e) => handleSearchButton(e, true)}>
             <img src={searchIcon} alt="Search" />
           </IconButton>
-        )}
+        )} */}
         <IconButton>
           <img src={addIcon} alt="Add" />
         </IconButton>

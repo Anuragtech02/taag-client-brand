@@ -47,15 +47,8 @@ const Campaign = () => {
 
   const [tab, setTab] = useState(0);
 
-  const {
-    campaign,
-    setCampaign,
-    campaignMain,
-    campaignInfo,
-    campaignContact,
-    campaignInvoice,
-    campaignAnalytics,
-  } = useContext(CurrentContext);
+  const { campaign, setCampaign, campaignMain, campaignAnalytics } =
+    useContext(CurrentContext);
   const { id } = useParams();
 
   useEffect(() => {

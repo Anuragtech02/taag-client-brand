@@ -92,21 +92,23 @@ const EditableCell = ({
 const CustomTable = ({
   columns,
   data,
+  setData,
   onRowSelect,
   selectedRows,
   isSelectable,
 }) => {
-  const [dataSource, setDataSource] = useState([]);
+  // const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
+  // useEffect(() => {
+  //   setLoading(true);
 
-    setDataSource(
-      data?.map((item) => ({ ...item, key: item.id || item._id || item.name }))
-    );
-    setLoading(false);
-  }, [data]);
+  //   // setDataSource(
+  //   //   data?.map((item) => ({ ...item, key: item.id || item._id || item.name }))
+  //   // );
+  //   setDataSource(data);
+  //   setLoading(false);
+  // }, [data]);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -275,13 +277,13 @@ const CustomTable = ({
 
   const handleSave = async (row) => {
     setLoading(true);
-    console.log({ dataSource });
-    const newData = [...dataSource];
+    console.log({ data });
+    const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     console.log({ newData, index, item, row });
     newData.splice(index, 1, { ...item, ...row });
-    setDataSource(newData);
+    setData(newData);
     if (item?.deliverableLink !== row?.deliverableLink) {
       const ytId = getYoutubeId(row.deliverableLink);
       if (!ytId) return;
@@ -300,7 +302,7 @@ const CustomTable = ({
       console.log({ ytData });
       newData.splice(index, 1, { ...item, ...newItem });
       console.log({ newData, index });
-      setDataSource(newData);
+      setData(newData);
     }
     setLoading(false);
   };
@@ -316,7 +318,7 @@ const CustomTable = ({
     <Table
       className={styles.customTable}
       columns={cols}
-      dataSource={dataSource}
+      dataSource={data}
       rowClassName={() => "editable-row"}
       rowSelection={isSelectable ? rowSelection : null}
       components={components}

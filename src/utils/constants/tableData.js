@@ -45,6 +45,7 @@ export const tableData = {
           // width: "30%",
           searchable: true,
           editable: false,
+          fixed: "left",
         },
         {
           title: "Link",
@@ -320,6 +321,7 @@ export const tableData = {
         key: "name",
         // width: "30%",
         searchable: true,
+        fixed: "left",
       },
       {
         title: "Upload Link",

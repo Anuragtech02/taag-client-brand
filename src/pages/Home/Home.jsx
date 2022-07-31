@@ -80,6 +80,7 @@ const Home = () => {
         <Link to={`/campaigns/${record.id}`}>{text}</Link>
       ),
       searchable: true,
+      fixed: "left",
     },
     {
       title: "Date",

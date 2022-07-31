@@ -5,18 +5,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const { back } = icons;
 
-const Breadcrumb = () => {
+const Breadcrumb = ({ prevRoute }) => {
   let { pathname } = useLocation();
   const navigate = useNavigate();
-  const [previousRoute, setPreviousRoute] = useState("");
+  const [previousRoute, setPreviousRoute] = useState(prevRoute);
+
   useEffect(() => {
     let newRoute = pathname.split("/").filter((elm) => elm);
     newRoute.pop();
-    setPreviousRoute(newRoute.join("/"));
-  }, []);
+    setPreviousRoute(prevRoute || newRoute.join("/"));
+  }, [prevRoute, pathname]);
+
   return (
     <div>
-      <IconButton onClick={() => navigate("/" + previousRoute)}>
+      <IconButton onClick={() => navigate(previousRoute)}>
         <img src={back} alt="Back" />
       </IconButton>
     </div>
