@@ -1,38 +1,48 @@
-.App {
-  text-align: center;
+th {
+  background-color: #21252a !important ;
+  color: white !important;
+}
+.ant-spin-container {
+  border-radius: 40px 10px 0 0 !important;
+}
+th:last-child {
+  background-color: var(--clr-bg-dark) !important;
+}
+.ant-table-row .ant-table-cell {
+  background-color: #21252a !important;
+  color: white !important;
+}
+.ant-table-row:hover .ant-table-cell {
+  background-color: rgba(33, 37, 42, 0.9) !important;
+}
+.ant-table-row-selected .ant-table-cell {
+  background-color: rgba(33, 37, 42, 0.95) !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: var(--clr-primary) !important;
+  background-color: var(--clr-primary) !important;
+}
+.ant-checkbox .ant-checkbox-inner {
+  border-color: white !important;
+  background-color: var(--clr-primary) !important;
+}
+.ant-table-body::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+/* Track /
+      .ant-table-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+      / Handle /
+      .ant-table-body::-webkit-scrollbar-thumb {
+        background: rgb(67, 66, 66);
+        border: 1px solid rgba(67, 66, 66,0.4);
+      }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+      / Handle on hover */
+.ant-table-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

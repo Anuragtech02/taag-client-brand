@@ -1,0 +1,19 @@
+@import "../../utils/commons.scss";
+
+.container {
+  width: 100%;
+  padding: 0rem 1rem;
+  .tableContainer {
+    // width: var(--fixed-width);
+
+    // border-radius: 10px !important;
+    // overflow: hidden;
+    height: 500px;
+    margin-top: 1rem;
+  }
+  button {
+    img {
+      width: 30px;
+    }
+  }
+}
