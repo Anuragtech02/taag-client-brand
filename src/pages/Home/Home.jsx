@@ -76,7 +76,7 @@ const Home = () => {
       dataIndex: "name",
       key: "name",
       // width: "30%",
-      render: ({ text, record }) => (
+      render: (text, record) => (
         <Link to={`/campaigns/${record.id}`}>{text}</Link>
       ),
       searchable: true,
@@ -88,7 +88,7 @@ const Home = () => {
       key: "date",
       searchable: true,
       isObj: false,
-      render: ({ text }) => <span>{new Date(text).toLocaleDateString()}</span>,
+      render: (text) => <span>{new Date(text).toLocaleDateString()}</span>,
       // width: "30%",
     },
     {
@@ -97,7 +97,7 @@ const Home = () => {
       key: "brand",
       searchable: true,
       isObj: true,
-      render: ({ text }) => <span>{text?.name}</span>,
+      render: (text) => <span>{text?.name}</span>,
       // width: "30%",
     },
     {
@@ -120,10 +120,10 @@ const Home = () => {
     },
     {
       title: "Person Name",
-      dataIndex: "id",
+      dataIndex: "brand",
       key: "open",
       isObj: false,
-      render: (id) => <Link to={`/campaigns/${id}`}>View</Link>,
+      render: (brand) => <span>{brand?.poc?.name}</span>,
       // width: "20%",
       // searchable: true,
     },
@@ -145,14 +145,14 @@ const Home = () => {
         navigate={navigate}
       /> */}
       <div className={styles.header}>
-        <InputField
+        {/* <InputField
           id="search"
           type="search"
           value={filters.search || ""}
           onChange={handleChange}
           placeholder={"Search Campaign"}
-        />
-        <div>
+        /> */}
+        {/* <div>
           <InputSelect
             label={"Sort By: Week/Month"}
             name={"sortBy"}
@@ -167,7 +167,7 @@ const Home = () => {
           >
             New Campaign +
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className={styles.tableContainer}>
         <CustomTable columns={columns} data={data} />

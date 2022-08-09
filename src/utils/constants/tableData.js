@@ -1,4 +1,4 @@
-import { KMBFormatter } from "..";
+import { KMBFormatter, showAlert } from "..";
 import { Button, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -23,10 +23,16 @@ const props = {
   },
 };
 
-const handleChangeInvoice = async (e) => {
+const handleChangeInvoice = async (e, record) => {
+  const file = e.target.files[0];
+  if (!file) {
+    return showAlert("error", "Please Select a valid file");
+  }
   const formData = new FormData();
-  formData.id = window.location.pathname.split("/")[2];
-  formData.append("file", e.file);
+  formData.append("file", file);
+  formData.append("id", window.location.pathname.split("/")[2]);
+  formData.append("artistId", record._id);
+  console.log(file);
   const res = await axios.post(
     `${process.env.REACT_APP_API_URI}/campaigns/upload`,
     formData
@@ -34,18 +40,74 @@ const handleChangeInvoice = async (e) => {
   console.log({ res });
 };
 
+const onClickDownloadInvoice = async (record) => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_API_URI}/campaigns/download-invoice/`,
+    {
+      headers: {
+        authorization: localStorage.getItem("token"),
+      },
+      params: {
+        id: window.location.pathname.split("/")[2],
+        artistId: record._id,
+      },
+      responseType: "blob",
+    }
+  );
+  // Create blob link to download
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", record.invoice);
+
+  // Append to html link element page
+  document.body.appendChild(link);
+
+  // Start download
+  link.click();
+
+  // Clean up and remove the link
+  link.parentNode.removeChild(link);
+};
+
+function getLink(record) {
+  let link = record.deliverable?.includes("YT")
+    ? record.youtube?.link || "NA"
+    : record.instagram?.link || "NA";
+  return link && link !== "NA" ? (
+    <a
+      style={{
+        maxWidth: "100px",
+        display: "block",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+      href={link ?? ""}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {link}
+    </a>
+  ) : (
+    <span>NA</span>
+  );
+}
+
+function removeArtist(record) {}
+
 export const tableData = {
   campaign: {
     main: {
       columns: [
         {
           title: "Name",
+          fixed: "left",
           dataIndex: "name",
           key: "name",
           // width: "30%",
           searchable: true,
-          editable: false,
-          fixed: "left",
+          // editable: true,
         },
         {
           title: "Link",
@@ -53,35 +115,40 @@ export const tableData = {
           key: "link",
           // width: "20%",
           // searchable: true,
-          render: (link) => (
-            <span
-              style={{
-                maxWidth: "100px",
-                display: "block",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {link || "NA"}
-            </span>
-          ),
-          // editable: false,
+          render: (link, record) => getLink(record),
+          editable: false,
         },
         {
           title: "Followers",
           dataIndex: "followers",
           key: "followers",
-          render: (followers) => <span>{KMBFormatter(followers)}</span>,
+          render: (followers, record) => (
+            <span>
+              {KMBFormatter(
+                record.deliverable?.includes("YT")
+                  ? record.youtube?.subscribers
+                  : record.instagram?.followers || "NA"
+              )}
+            </span>
+          ),
           // width: "20%",
-          sorter: (a, b) => a - b,
-          sortDirections: ["descend", "ascend"],
+          sorter: (a, b) =>
+            parseInt(a.instagram?.followers) - parseInt(b.instagram?.followers),
+          // sortDirections: ["descend", "ascend"],
         },
         {
           title: "Avg. Views",
           dataIndex: "averageViews",
           key: "averageViews",
-          render: (views) => <span>{KMBFormatter(views)}</span>,
+          render: (views, record) => (
+            <span>
+              {KMBFormatter(
+                record.deliverable?.includes("YT")
+                  ? record.youtube?.averageViews
+                  : record.instagram?.averageViews
+              )}
+            </span>
+          ),
           // sorter: (a, b) => a - b,
           // sortDirections: ["descend", "ascend"],
         },
@@ -92,18 +159,14 @@ export const tableData = {
           // width: "20%",
           searchable: true,
         },
-        // {
-        //   title: "Commercial Creator",
-        //   dataIndex: "commercialCreator",
-        //   key: "commercialCreator",
-        //   editable: false,
-        //   // width: "20%",
-        // },
         {
           title: "Brand Commercial",
           dataIndex: "brandCommercial",
           key: "brandCommercial",
-          editable: false,
+          editable: true,
+          render: (text) => <span>{KMBFormatter(text)}</span>,
+          sorter: (a, b) =>
+            parseInt(a.brandCommercial) - parseInt(b.brandCommercial),
           // width: "20%",
           // searchable: true,
         },
@@ -113,12 +176,6 @@ export const tableData = {
           key: "cpvBrand",
           // width: "20%",
         },
-        // {
-        //   title: "Agency Fees",
-        //   dataIndex: "agencyFees",
-        //   key: "agencyFees",
-        //   // width: "20%",
-        // },
       ],
       data: [
         {
@@ -151,6 +208,7 @@ export const tableData = {
       columns: [
         {
           title: "Name",
+          fixed: "left",
           dataIndex: "name",
           key: "name",
           // width: "30%",
@@ -161,7 +219,20 @@ export const tableData = {
           dataIndex: "gender",
           key: "gender",
           // width: "30%",
-          searchable: true,
+          // searchable: true,
+          // filters: [
+          //   {
+          //     text: "Male",
+          //     value: "male",
+          //   },
+          //   {
+          //     text: "Female",
+          //     value: "female",
+          //   },
+          // ],
+          // onFilter: (value, record) =>
+          //   record.gender.toLowerCase().indexOf(value) === 0,
+          sorter: (a, b) => a.gender.length - b.gender.length,
         },
         {
           title: "Location",
@@ -174,7 +245,11 @@ export const tableData = {
           title: "Language",
           dataIndex: "languages",
           key: "language",
-          render: (languages) => <span>{languages.join(", ")}</span>,
+          render: (languages) => (
+            <span style={{ textTransform: "capitalize" }}>
+              {languages.join(", ")}
+            </span>
+          ),
           // width: "30%",
           // searchable: true,
         },
@@ -210,6 +285,7 @@ export const tableData = {
       columns: [
         {
           title: "Name",
+          fixed: "left",
           dataIndex: "name",
           key: "name",
           // width: "30%",
@@ -260,6 +336,7 @@ export const tableData = {
     columns: [
       {
         title: "Name",
+        fixed: "left",
         dataIndex: "name",
         key: "name",
         // width: "30%",
@@ -277,16 +354,20 @@ export const tableData = {
         title: "Invoice Upload",
         dataIndex: "invoice",
         key: "invoice",
-        render: (invoice) =>
+        render: (invoice, record) =>
           invoice ? (
-            <a href={invoice} download>
+            <Button
+              // href={`${process.env.REACT_APP_API_URI}/camapaign/${invoice}`}
+              // download
+              onClick={() => onClickDownloadInvoice(record)}
+            >
               Download
-            </a>
+            </Button>
           ) : (
             <input
               type="file"
               placeholder="Upload"
-              onChange={handleChangeInvoice}
+              onChange={(e) => handleChangeInvoice(e, record)}
             />
           ),
 
@@ -299,7 +380,7 @@ export const tableData = {
         key: "note",
         // width: "30%",
         searchable: true,
-        editable: false,
+        editable: true,
       },
     ],
     data: [
@@ -317,11 +398,11 @@ export const tableData = {
     columns: [
       {
         title: "Name",
+        fixed: "left",
         dataIndex: "name",
         key: "name",
         // width: "30%",
         searchable: true,
-        fixed: "left",
       },
       {
         title: "Upload Link",
@@ -329,7 +410,7 @@ export const tableData = {
         key: "deliverableLink",
         // width: "30%",
         searchable: true,
-        editable: false,
+        editable: true,
       },
       {
         title: "Views",
@@ -337,6 +418,7 @@ export const tableData = {
         key: "views",
         // width: "30%",
         searchable: true,
+        render: (text) => <span>{KMBFormatter(text)}</span>,
       },
       {
         title: "Comments",
@@ -344,10 +426,11 @@ export const tableData = {
         key: "comments",
         // width: "30%",
         searchable: true,
+        render: (text) => <span>{KMBFormatter(text)}</span>,
       },
       {
         title: "ROI",
-        dataIndex: "ROI",
+        dataIndex: "roi",
         key: "ROI",
         // width: "30%",
         searchable: true,

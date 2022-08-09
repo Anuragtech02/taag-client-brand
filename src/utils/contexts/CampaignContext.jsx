@@ -12,10 +12,10 @@ const CampaignContextProvider = ({ children }) => {
 
   async function fetchCampaigns(status = "all") {
     const res = await axios.get(
-      `${process.env.REACT_APP_API_URI}/campaigns/all`,
+      `${process.env.REACT_APP_API_URI}/campaigns/brand`,
       {
         params: {
-          status,
+          brand: "wow",
         },
       }
     );

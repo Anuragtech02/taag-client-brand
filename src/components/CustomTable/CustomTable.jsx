@@ -1,11 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button as AntButton, Form, Input, Space, Table } from "antd";
+import {
+  Button as AntButton,
+  Form,
+  Input,
+  Popconfirm,
+  Space,
+  Table,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import styles from "./CustomTable.module.scss";
 import "antd/dist/antd.css";
 import axios from "axios";
-import { getYoutubeId } from "../../utils";
+import { getROI, getYoutubeId, KMBFormatter } from "../../utils";
 
 const EditableContext = React.createContext(null);
 
@@ -49,7 +56,7 @@ const EditableCell = ({
     try {
       const values = await form.validateFields();
       toggleEdit();
-      handleSave({ ...record, ...values });
+      handleSave({ ...record, ...values, dataIndex });
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
     }
@@ -96,19 +103,20 @@ const CustomTable = ({
   onRowSelect,
   selectedRows,
   isSelectable,
+  campaign,
 }) => {
   // const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setLoading(true);
+  useEffect(() => {
+    setLoading(true);
 
-  //   // setDataSource(
-  //   //   data?.map((item) => ({ ...item, key: item.id || item._id || item.name }))
-  //   // );
-  //   setDataSource(data);
-  //   setLoading(false);
-  // }, [data]);
+    sessionStorage.setItem("data", JSON.stringify(data));
+    // setDataSource(
+    //   data?.map((item) => ({ ...item, key: item.id || item._id || item.name }))
+    // );
+    setLoading(false);
+  }, [data]);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -116,18 +124,18 @@ const CustomTable = ({
   const [cols, setCols] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  useEffect(() => {
-    if (selectedRows) {
-      setLoading(true);
-      console.log({ selectedRows });
-      setSelectedRowKeys(selectedRows.map((item) => item._id));
-      setLoading(false);
-    }
-  }, [selectedRows]);
+  // useEffect(() => {
+  //   if (selectedRows) {
+  //     setLoading(true);
+  //     console.log({ selectedRows });
+  //     setSelectedRowKeys(selectedRows.map((item) => item._id));
+  //     setLoading(false);
+  //   }
+  // }, [selectedRows]);
 
   const onSelectChange = (newSelectedRowKeys, rows) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
-    // setSelectedRowKeys(newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
     console.log({ rows });
     onRowSelect(rows);
   };
@@ -223,30 +231,47 @@ const CustomTable = ({
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: (text, record) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: "#ffc069",
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : CompCustomRender ? (
-        <CompCustomRender text={text} record={record} {...text} />
-      ) : (
-        text
-      ),
+    // render: (text, record) =>
+    //   searchedColumn === dataIndex ? (
+    //     <Highlighter
+    //       highlightStyle={{
+    //         backgroundColor: "#ffc069",
+    //         padding: 0,
+    //       }}
+    //       searchWords={[searchText]}
+    //       autoEscape
+    //       textToHighlight={text ? text.toString() : ""}
+    //     />
+    //   ) : CompCustomRender ? (
+    //     <CompCustomRender text={text} record={record} />
+    //   ) : (
+    //     text
+    //   ),
   });
+
+  function handleDelete(record) {
+    setData(data.filter((item) => item._id !== record._id));
+  }
 
   useEffect(() => {
     setLoading(true);
 
-    setCols(
-      columns?.map((col) => {
-        let finalCol = { ...col };
+    setCols([
+      ...columns?.map((col) => {
+        let finalCol = {
+          ...col,
+        };
+        if (col.dataIndex === "remove") {
+          finalCol.render = (_, record) =>
+            data.length >= 1 ? (
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => handleDelete(record)}
+              >
+                <a>Delete</a>
+              </Popconfirm>
+            ) : null;
+        }
         if (col.editable) {
           finalCol = {
             ...finalCol,
@@ -270,23 +295,39 @@ const CustomTable = ({
           };
         }
         return finalCol;
-      })
-    );
+      }),
+    ]);
     setLoading(false);
   }, [columns]);
 
   const handleSave = async (row) => {
     setLoading(true);
-    console.log({ data });
-    const newData = [...data];
-    const index = newData.findIndex((item) => row.key === item.key);
+    console.log("----------------------------------------------------");
+    console.log({ data, row });
+    const dat = JSON.parse(sessionStorage.getItem("data"));
+    const newData = [...dat];
+    const index = newData.findIndex((item) => row._id === item._id);
     const item = newData[index];
     console.log({ newData, index, item, row });
+    if (row?.commercialCreator || row?.brandCommercial) {
+      row.agencyFees =
+        (parseInt(row.brandCommercial) || 0) -
+        (parseInt(row.commercialCreator) || 0);
+    }
+    if (row.dataIndex !== "deliverableLink") {
+      delete item.dataIndex;
+      setData(newData);
+    }
     newData.splice(index, 1, { ...item, ...row });
-    setData(newData);
+    console.log({ newData });
+    if (item?.deliverableLink === row?.deliverableLink) {
+      setData(newData);
+    }
+    // setData(newData);
     if (item?.deliverableLink !== row?.deliverableLink) {
+      setLoading(true);
       const ytId = getYoutubeId(row.deliverableLink);
-      if (!ytId) return;
+      if (!ytId) return setData(newData);
       console.log(ytId["1"]);
       const ytData = await axios.get(
         `${process.env.REACT_APP_API_URI}/youtube/getLikes`,
@@ -299,11 +340,13 @@ const CustomTable = ({
       let newItem = row;
       newItem.views = ytData.data.views;
       newItem.comments = ytData.data.comments;
+      newItem.roi = getROI(newItem);
       console.log({ ytData });
       newData.splice(index, 1, { ...item, ...newItem });
       console.log({ newData, index });
       setData(newData);
     }
+
     setLoading(false);
   };
 
@@ -322,10 +365,16 @@ const CustomTable = ({
       rowClassName={() => "editable-row"}
       rowSelection={isSelectable ? rowSelection : null}
       components={components}
-      selectedRowKeys={selectedRowKeys}
+      // selectedRowKeys={selectedRowKeys}
+      pagination={{
+        position: ["right", "bottom"],
+        showSizeChanger: true,
+        size: "small",
+      }}
+      sticky
       scroll={{
         x: 1500,
-        y: 800,
+        y: 350,
       }}
       loading={loading}
     />
