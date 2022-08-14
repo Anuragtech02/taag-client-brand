@@ -94,8 +94,8 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        showAlert("success", "Reset Link sent");
         setLoading(false);
+        return showAlert("success", "Reset Link sent");
         // navigate("/");
       } else {
       }

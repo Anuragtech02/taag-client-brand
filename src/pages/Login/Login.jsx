@@ -43,6 +43,7 @@ const Login = () => {
         {
           email: values?.email,
           password: values?.password,
+          userType: "brand",
         }
       );
 
