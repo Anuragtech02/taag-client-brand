@@ -22,6 +22,10 @@ const CampaignContextProvider = ({ children }) => {
     setCampaigns(
       res.data?.map((campaign) => {
         let newObj = { ...campaign };
+        newObj.brandAmount = campaign.selectedArtists?.reduce(
+          (acc, curr) => acc + curr.brandCommercial,
+          0
+        );
         newObj.id = newObj._id;
         delete newObj._id;
         return newObj;

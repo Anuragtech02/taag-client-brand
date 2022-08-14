@@ -55,7 +55,9 @@ function newSelectionArist(item, campaign) {
       : 0,
     deliverable: item.deliverable || campaign.deliverable || "NA",
     brandCommercial,
-    cpvBrand: item.cpvBrand || 0,
+    cpvBrand: (parseInt(brandCommercial) / parseInt(item.views) || 0).toFixed(
+      2
+    ),
     gender: item.gender,
     location: item.location,
     languages: item.languages,
@@ -168,7 +170,7 @@ const Campaign = () => {
           <div className={styles.tableContainer}>
             <CustomTable
               columns={tableData.campaign_analytics.columns}
-              data={campaignAnalytics}
+              data={data}
               onRowSelect={handleSelectRow}
               selectedRows={data || []}
             />

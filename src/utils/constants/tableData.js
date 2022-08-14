@@ -410,7 +410,7 @@ export const tableData = {
         key: "deliverableLink",
         // width: "30%",
         searchable: true,
-        editable: true,
+        // editable: true,
       },
       {
         title: "Views",

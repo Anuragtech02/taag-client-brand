@@ -8,6 +8,7 @@ import {
   CampaignContext,
   CampgaignContext,
 } from "../../utils/contexts/CampaignContext";
+import { formatIndianCurrency } from "../../utils";
 
 const sortingOptions = [
   {
@@ -105,6 +106,7 @@ const Home = () => {
       dataIndex: "brandAmount",
       key: "brandAmount",
       // width: "30%",
+      render: (text) => <span>{formatIndianCurrency(text)}</span>,
       searchable: true,
     },
     {

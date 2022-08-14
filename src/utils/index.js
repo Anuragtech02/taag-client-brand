@@ -97,15 +97,22 @@ export function getCommercial(deliverable, record) {
   }
 }
 
-export function getROI(item) {
+export function getROI(item, brandCommercial) {
   if (item.roi && item.roi !== "NA") {
-    return item.roi;
+    return parseInt(item.roi);
   }
 
   return item.views && item.comments
     ? (
-        parseInt(item.brandCommercial) /
+        parseInt(brandCommercial || item.brandCommercial) /
         (parseInt(item.views) + parseInt(item.comments))
       ).toFixed(2) || "NA"
     : "NA";
+}
+
+export function formatIndianCurrency(amount) {
+  return amount.toLocaleString("en-IN", {
+    style: "currency",
+    currency: "INR",
+  });
 }
