@@ -84,25 +84,27 @@ const Login = () => {
       }
     }
 
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URI}/auth/request-password-reset/`,
-        {
-          email: values?.email,
-          userType: "brand",
-        }
-      );
+    if (!token && !id && !isValidURI) {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URI}/auth/request-password-reset/`,
+          {
+            email: values?.email,
+            userType: "brand",
+          }
+        );
 
-      if (response.status === 200) {
+        if (response.status === 200) {
+          setLoading(false);
+          return showAlert("success", "Reset Link sent");
+          // navigate("/");
+        } else {
+        }
+      } catch (error) {
+        // console.log("True error", error.response);
+        setError(error.response.data.message);
         setLoading(false);
-        return showAlert("success", "Reset Link sent");
-        // navigate("/");
-      } else {
       }
-    } catch (error) {
-      // console.log("True error", error.response);
-      setError(error.response.data.message);
-      setLoading(false);
     }
   }
 
