@@ -11,11 +11,12 @@ const CampaignContextProvider = ({ children }) => {
   const { currentUser } = useContext(AuthContext);
 
   async function fetchCampaigns(status = "all") {
+    console.log({ currentUser });
     const res = await axios.get(
       `${process.env.REACT_APP_API_URI}/campaigns/brand`,
       {
         params: {
-          brand: "wow",
+          brand: currentUser.email,
         },
       }
     );
