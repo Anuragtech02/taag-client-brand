@@ -111,11 +111,13 @@ const Campaign = () => {
     if (campaign.extras?.length) {
       setMainCols([
         ...tableData.campaign.main.columns,
-        ...campaign.extras.map((item) => ({
-          ...item,
-          searchable: true,
-          editable: true,
-        })),
+        ...campaign.extras
+          .filter((item) => item.isVisible)
+          .map((item) => ({
+            ...item,
+            searchable: true,
+            // editable: true,
+          })),
       ]);
     }
     if (campaign?.selectedArtists) {
