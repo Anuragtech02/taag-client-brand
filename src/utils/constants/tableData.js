@@ -1,4 +1,4 @@
-import { KMBFormatter, showAlert } from "..";
+import { formatIndianCurrency, KMBFormatter, showAlert } from "..";
 import { Button, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -164,7 +164,7 @@ export const tableData = {
           dataIndex: "brandCommercial",
           key: "brandCommercial",
           editable: true,
-          render: (text) => <span>{KMBFormatter(text)}</span>,
+          render: (text) => <span>{formatIndianCurrency(text)}</span>,
           sorter: (a, b) =>
             parseInt(a.brandCommercial) - parseInt(b.brandCommercial),
           // width: "20%",
@@ -175,32 +175,6 @@ export const tableData = {
           dataIndex: "cpvBrand",
           key: "cpvBrand",
           // width: "20%",
-        },
-      ],
-      data: [
-        {
-          id: "1",
-          name: "Barkha",
-          link: "https://google.com",
-          followers: "1M",
-          avgViews: "400k",
-          deliverable: "IG Reel",
-          commercialCreator: "300k",
-          brandCommercial: "400k",
-          CPVBrand: "1",
-          agencyFees: "100k",
-        },
-        {
-          id: "2",
-          name: "John Brown",
-          link: "https://google.com",
-          followers: "20k",
-          avgViews: "100k",
-          deliverable: "YouTube",
-          commercialCreator: "150k",
-          brandCommercial: "400k",
-          CPVBrand: "1",
-          agencyFees: "100k",
         },
       ],
     },
