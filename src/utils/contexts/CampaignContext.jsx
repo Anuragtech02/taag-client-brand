@@ -24,7 +24,7 @@ const CampaignContextProvider = ({ children }) => {
       res.data?.map((campaign) => {
         let newObj = { ...campaign };
         newObj.brandAmount = campaign.selectedArtists?.reduce(
-          (acc, curr) => acc + curr.brandCommercial,
+          (acc, curr) => acc + parseInt(curr.brandCommercial) || 0,
           0
         );
         newObj.id = newObj._id;

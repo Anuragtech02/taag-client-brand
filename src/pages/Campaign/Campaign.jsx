@@ -164,7 +164,7 @@ const Campaign = () => {
         brandAmount: campaign?.brandAmount,
         totalAverageViews: KMBFormatter(campaign?.totalAverageViews || 0),
         totalCreator: data?.length.toString() || "0",
-        averageROI: "0.4",
+        averageROI: campaign?.averageROI || "0.0",
       }}
     >
       <div className={styles.tablesContainer}>
