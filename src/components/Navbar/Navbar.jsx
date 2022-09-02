@@ -11,13 +11,15 @@ import { styled } from "@mui/system";
 import { icons, images } from "../../assets";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Dropdown, Button as AButton, Menu } from "antd";
+import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
+import clsx from "clsx";
 
 const { bell, editing, back } = icons;
 const { profile } = images;
 
-const Navbar = ({ titleProps, progress }) => {
+const Navbar = ({ titleProps, progress, prevRoute,brandName }) => {
   const navigate = useNavigate();
-
   function handleLogout() {
     localStorage.removeItem("token");
     navigate("/login");
@@ -35,12 +37,18 @@ const Navbar = ({ titleProps, progress }) => {
             onChange={titleProps?.onChange}
             isEditIconVisible={titleProps?.isEditIconVisible}
             isBackIconVisible={titleProps?.isBackIconVisible}
-            brandName={titleProps?.brandName}
+            brandName={brandName}
+            prevRoute={prevRoute}
           />
+          
         </div>
         <div className={styles.right}>
-          <BellButton newNotifications={true} />
-          <ProfileButton onClick={handleLogout} />
+          {/* <BellButton newNotifications={true} /> */}
+          <ProfileButton
+          brandName={brandName}
+            onClick={handleLogout}
+            handleClickLogout={handleLogout}
+          />
         </div>
       </div>
       {progress ? <MUILinearProgress progress={progress} /> : ""}
@@ -48,12 +56,38 @@ const Navbar = ({ titleProps, progress }) => {
   );
 };
 
-const ProfileButton = ({ ...remaining }) => {
+const ProfileButton = ({ brandName,handleClickLogout, ...remaining }) => {
+  function handleClickProfile(e) {
+    if (e.key === "logout") {
+      handleClickLogout();
+    }
+  }
+
+  const menu = (
+    <Menu
+      onClick={handleClickProfile}
+      items={[
+        {
+          label: "Logout",
+          key: "logout",
+          icon: <LogoutOutlined />,
+        },
+      ]}
+    />
+  );
+
   return (
-    <div className={styles.profile}>
-      <IconButton {...remaining}>
-        <img src={profile} alt="Profile" />
-      </IconButton>
+    <div  className={clsx(styles.flexRow,styles.profile)}>
+      
+      <Dropdown overlay={menu}>
+        <AButton
+          icon={<img src={profile} alt="Profile" />}
+          className="ant-icon-btn"
+        >
+          {/* Logout
+          <DownOutlined /> */}
+        </AButton>
+      </Dropdown>
     </div>
   );
 };
@@ -77,6 +111,7 @@ const Title = ({
   brandName,
   onChange,
   disabled,
+  prevRoute,
   ...remaining
 }) => {
   console.log(remaining);
@@ -86,13 +121,17 @@ const Title = ({
       className={styles.title}
     >
       <div className={styles.top}>
-        <div className={styles.fixedWidth}>
-          {isBackIconVisible && <Breadcrumb prevRoute={"/"} />}
+        <div
+          className={styles.fixedWidth}
+          style={{ width: !isBackIconVisible ? 0 : "50px" }}
+        >
+          {isBackIconVisible && <Breadcrumb prevRoute={prevRoute} />}
         </div>
         <input
           id={id}
           value={name}
           type="text"
+          placeholder="Enter Campaign Name"
           disabled={disabled}
           onChange={onChange}
           {...remaining}

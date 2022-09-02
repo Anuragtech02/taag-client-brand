@@ -87,9 +87,6 @@ const MoreInformation = ({
             <img src={searchIcon} alt="Search" />
           </IconButton>
         )} */}
-        <IconButton>
-          <img src={addIcon} alt="Add" />
-        </IconButton>
       </div>
     </div>
   );
