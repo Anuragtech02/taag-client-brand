@@ -14,14 +14,15 @@ import { useNavigate } from "react-router-dom";
 import { Dropdown, Button as AButton, Menu } from "antd";
 import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
 import clsx from "clsx";
+import { TAAG_BRAND_TOKEN } from "../../utils/constants";
 
 const { bell, editing, back } = icons;
 const { profile } = images;
 
-const Navbar = ({ titleProps, progress, prevRoute,brandName }) => {
+const Navbar = ({ titleProps, progress, prevRoute, brandName }) => {
   const navigate = useNavigate();
   function handleLogout() {
-    localStorage.removeItem("token");
+    localStorage.removeItem(TAAG_BRAND_TOKEN);
     navigate("/login");
   }
 
@@ -40,12 +41,11 @@ const Navbar = ({ titleProps, progress, prevRoute,brandName }) => {
             brandName={brandName}
             prevRoute={prevRoute}
           />
-          
         </div>
         <div className={styles.right}>
           {/* <BellButton newNotifications={true} /> */}
           <ProfileButton
-          brandName={brandName}
+            brandName={brandName}
             onClick={handleLogout}
             handleClickLogout={handleLogout}
           />
@@ -56,7 +56,7 @@ const Navbar = ({ titleProps, progress, prevRoute,brandName }) => {
   );
 };
 
-const ProfileButton = ({ brandName,handleClickLogout, ...remaining }) => {
+const ProfileButton = ({ brandName, handleClickLogout, ...remaining }) => {
   function handleClickProfile(e) {
     if (e.key === "logout") {
       handleClickLogout();
@@ -77,8 +77,7 @@ const ProfileButton = ({ brandName,handleClickLogout, ...remaining }) => {
   );
 
   return (
-    <div  className={clsx(styles.flexRow,styles.profile)}>
-      
+    <div className={clsx(styles.flexRow, styles.profile)}>
       <Dropdown overlay={menu}>
         <AButton
           icon={<img src={profile} alt="Profile" />}
