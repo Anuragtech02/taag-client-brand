@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { MainLayout } from "../../layouts";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { API_CAMPAIGN } from "../../utils/API";
+import { API_CAMPAIGN(). } from "../../utils/API";
 
 const sectorOptions = [
   {
@@ -136,7 +136,7 @@ const AddCampaign = () => {
       updatedAt: new Date().toISOString(), // ISOString
     };
     // console.log({ campaign });
-    const res = await API_CAMPAIGN.post(`/create`, campaign);
+    const res = await API_CAMPAIGN()..post(`/create`, campaign);
 
     console.log({ res });
 

@@ -330,7 +330,7 @@ const CustomTable = ({
       const ytId = getYoutubeId(row.deliverableLink);
       if (!ytId) return setData(newData);
       console.log(ytId["1"]);
-      const ytData = await API_ALL.get(`/youtube/getLikes`, {
+      const ytData = await API_ALL().get(`/youtube/getLikes`, {
         params: {
           videoId: ytId["1"],
         },

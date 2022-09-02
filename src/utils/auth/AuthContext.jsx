@@ -1,6 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import { decodeToken } from "react-jwt";
-import { TAAG_BRAND_TOKEN } from "../constants";
+import { TAAG_BRAND_TOKEN } from "../constants/constants";
 
 export const AuthContext = createContext({});
 

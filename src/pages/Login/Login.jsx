@@ -8,8 +8,8 @@ import { useNavigate } from "react-router";
 import logo from "../../assets/icons/logo.svg";
 import { LinearProgress } from "@mui/material";
 import Logo from "../../components/Logo/Logo";
-import { TAAG_BRAND_TOKEN } from "../../utils/constants";
 import { API_AUTH } from "../../utils/API";
+import { TAAG_BRAND_TOKEN } from "../../utils/constants/constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await API_AUTH.post(`/login/`, {
+      const response = await API_AUTH().post(`/login/`, {
         email: values?.email,
         password: values?.password,
         userType: "brand",

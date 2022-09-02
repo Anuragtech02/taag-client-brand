@@ -11,7 +11,7 @@ const UploadArtists = () => {
     const formData = new FormData();
     formData.append("file", acceptedFiles[0]);
     console.log({ acceptedFiles });
-    const response = await API_ARTIST.post(`/bulk`, formData);
+    const response = await API_ARTIST().post(`/bulk`, formData);
     if (response.status.toString().includes("20")) {
       showAlert("success", "Artists uploaded successfully");
     }

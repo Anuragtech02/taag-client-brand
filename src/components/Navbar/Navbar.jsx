@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { Dropdown, Button as AButton, Menu } from "antd";
 import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
 import clsx from "clsx";
-import { TAAG_BRAND_TOKEN } from "../../utils/constants";
+import { TAAG_BRAND_TOKEN } from "../../utils/constants/constants";
 
 const { bell, editing, back } = icons;
 const { profile } = images;

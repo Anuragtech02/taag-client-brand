@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { TAAG_BRAND_TOKEN } from "../constants";
+import { TAAG_BRAND_TOKEN } from "../constants/constants";
 import { AuthContext } from "./AuthContext";
 
 const PrivateRoute = ({ component: RouteComponent }) => {

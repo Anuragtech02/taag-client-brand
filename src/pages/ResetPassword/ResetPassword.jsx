@@ -35,7 +35,7 @@ const Login = () => {
     async function confirmToken() {
       console.log({ uri: window.location.href, id });
       try {
-        const res = await API_AUTH.get(`/verify-reset-token/`, {
+        const res = await API_AUTH().get(`/verify-reset-token/`, {
           params: {
             uri: window.location.href,
             id,
@@ -64,7 +64,7 @@ const Login = () => {
         return showAlert("error", "Passwords do not match");
       }
       try {
-        const res = await API_AUTH.post(`/reset-password/`, {
+        const res = await API_AUTH().post(`/reset-password/`, {
           email: values.email,
           newPassword: values.newPassword,
           userType: "brand",
@@ -81,7 +81,7 @@ const Login = () => {
 
     if (!token && !id && !isValidURI) {
       try {
-        const response = await API_AUTH.post(`/request-password-reset/`, {
+        const response = await API_AUTH().post(`/request-password-reset/`, {
           email: values?.email,
           userType: "brand",
         });

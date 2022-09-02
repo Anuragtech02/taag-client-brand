@@ -32,7 +32,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await API_ALL.post(`/user/create/`, {
+      const res = await API_ALL().post(`/user/create/`, {
         ...values,
         userType: "brand",
       });

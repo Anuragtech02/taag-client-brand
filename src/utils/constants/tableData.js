@@ -2,7 +2,7 @@ import { formatIndianCurrency, KMBFormatter, showAlert } from "..";
 import { Button, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { API_CAMPAIGN } from "../API";
+import { API_CAMPAIGN(). } from "../API";
 
 const props = {
   name: "file",
@@ -34,12 +34,12 @@ const handleChangeInvoice = async (e, record) => {
   formData.append("id", window.location.pathname.split("/")[2]);
   formData.append("artistId", record._id);
   console.log(file);
-  const res = await API_CAMPAIGN.post(`/upload`, formData);
+  const res = await API_CAMPAIGN()..post(`/upload`, formData);
   console.log({ res });
 };
 
 const onClickDownloadInvoice = async (record) => {
-  const res = await API_CAMPAIGN.get(`/download-invoice/`, {
+  const res = await API_CAMPAIGN()..get(`/download-invoice/`, {
     headers: {
       authorization: localStorage.getItem("token"),
     },
