@@ -34,6 +34,7 @@ const Register = () => {
     try {
       const res = await API_ALL.post(`/user/create/`, {
         ...values,
+        userType: "brand",
       });
       console.log({ res });
       showAlert("success", "You have successfully registered");
