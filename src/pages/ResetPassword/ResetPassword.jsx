@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router";
 import { LinearProgress } from "@mui/material";
 import Logo from "../../components/Logo/Logo";
 import { showAlert } from "../../utils";
+import { API_AUTH } from "../../utils/API";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,15 +35,12 @@ const Login = () => {
     async function confirmToken() {
       console.log({ uri: window.location.href, id });
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URI}/auth/verify-reset-token/`,
-          {
-            params: {
-              uri: window.location.href,
-              id,
-            },
-          }
-        );
+        const res = await API_AUTH.get(`/verify-reset-token/`, {
+          params: {
+            uri: window.location.href,
+            id,
+          },
+        });
         if (res.status === 200) {
           setIsValidURI(true);
         } else {
@@ -66,14 +64,11 @@ const Login = () => {
         return showAlert("error", "Passwords do not match");
       }
       try {
-        const res = await axios.post(
-          `${process.env.REACT_APP_API_URI}/auth/reset-password/`,
-          {
-            email: values.email,
-            newPassword: values.newPassword,
-            userType: "brand",
-          }
-        );
+        const res = await API_AUTH.post(`/reset-password/`, {
+          email: values.email,
+          newPassword: values.newPassword,
+          userType: "brand",
+        });
         setLoading(false);
         showAlert("success", res.data.message);
         setTimeout(() => {
@@ -86,13 +81,10 @@ const Login = () => {
 
     if (!token && !id && !isValidURI) {
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URI}/auth/request-password-reset/`,
-          {
-            email: values?.email,
-            userType: "brand",
-          }
-        );
+        const response = await API_AUTH.post(`/request-password-reset/`, {
+          email: values?.email,
+          userType: "brand",
+        });
 
         if (response.status === 200) {
           setLoading(false);

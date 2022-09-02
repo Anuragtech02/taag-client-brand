@@ -13,6 +13,7 @@ import styles from "./CustomTable.module.scss";
 import "antd/dist/antd.css";
 import axios from "axios";
 import { getROI, getYoutubeId, KMBFormatter } from "../../utils";
+import { API_ALL } from "../../utils/API";
 
 const EditableContext = React.createContext(null);
 
@@ -329,14 +330,11 @@ const CustomTable = ({
       const ytId = getYoutubeId(row.deliverableLink);
       if (!ytId) return setData(newData);
       console.log(ytId["1"]);
-      const ytData = await axios.get(
-        `${process.env.REACT_APP_API_URI}/youtube/getLikes`,
-        {
-          params: {
-            videoId: ytId["1"],
-          },
-        }
-      );
+      const ytData = await API_ALL.get(`/youtube/getLikes`, {
+        params: {
+          videoId: ytId["1"],
+        },
+      });
       let newItem = row;
       newItem.views = ytData.data.views;
       newItem.comments = ytData.data.comments;

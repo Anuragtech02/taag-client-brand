@@ -4,16 +4,14 @@ import { MainLayout } from "../../layouts";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import { showAlert } from "../../utils";
+import { API_ARTIST } from "../../utils/API";
 
 const UploadArtists = () => {
   async function onSubmit(acceptedFiles) {
     const formData = new FormData();
     formData.append("file", acceptedFiles[0]);
     console.log({ acceptedFiles });
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URI}/artist/bulk`,
-      formData
-    );
+    const response = await API_ARTIST.post(`/bulk`, formData);
     if (response.status.toString().includes("20")) {
       showAlert("success", "Artists uploaded successfully");
     }

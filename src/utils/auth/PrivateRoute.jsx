@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { TAAG_BRAND_TOKEN } from "../constants";
 import { AuthContext } from "./AuthContext";
 
 const PrivateRoute = ({ component: RouteComponent }) => {
   const { currentUser } = useContext(AuthContext);
 
-  if (!currentUser && !localStorage.getItem("token")) {
+  if (!currentUser && !localStorage.getItem(TAAG_BRAND_TOKEN)) {
     return <Navigate to="/login" />;
   }
 

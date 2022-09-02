@@ -8,6 +8,8 @@ import { useNavigate } from "react-router";
 import logo from "../../assets/icons/logo.svg";
 import { LinearProgress } from "@mui/material";
 import Logo from "../../components/Logo/Logo";
+import { TAAG_BRAND_TOKEN } from "../../utils/constants";
+import { API_AUTH } from "../../utils/API";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,14 +40,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URI}/auth/login/`,
-        {
-          email: values?.email,
-          password: values?.password,
-          userType: "brand",
-        }
-      );
+      const response = await API_AUTH.post(`/login/`, {
+        email: values?.email,
+        password: values?.password,
+        userType: "brand",
+      });
 
       console.log({ decoded: decodeToken(response.data.token), response });
 
@@ -55,7 +54,7 @@ const Login = () => {
           id: decoded.id,
           email: decoded.email,
         });
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem(TAAG_BRAND_TOKEN, response.data.token);
         setLoading(false);
         navigate("/");
       } else {

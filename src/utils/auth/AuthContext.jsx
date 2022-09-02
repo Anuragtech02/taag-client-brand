@@ -1,5 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import { decodeToken } from "react-jwt";
+import { TAAG_BRAND_TOKEN } from "../constants";
 
 export const AuthContext = createContext({});
 
@@ -7,7 +8,7 @@ const AuthContextProvider = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const user = localStorage.getItem("token");
+    const user = localStorage.getItem(TAAG_BRAND_TOKEN);
     if (user) {
       setCurrentUser(decodeToken(user));
     }

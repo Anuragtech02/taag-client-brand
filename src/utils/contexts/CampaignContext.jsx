@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, createContext, useContext } from "react";
+import { API_ARTIST, API_CAMPAIGN } from "../API";
 import { AuthContext } from "../auth/AuthContext";
 
 export const CampaignContext = createContext({});
@@ -12,14 +13,11 @@ const CampaignContextProvider = ({ children }) => {
 
   async function fetchCampaigns(status = "all") {
     console.log({ currentUser });
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URI}/campaigns/brand`,
-      {
-        params: {
-          brand: currentUser.email,
-        },
-      }
-    );
+    const res = await API_CAMPAIGN.get(`/brand`, {
+      params: {
+        brand: currentUser.email,
+      },
+    });
     setCampaigns(
       res.data?.map((campaign) => {
         let newObj = { ...campaign };
@@ -32,17 +30,14 @@ const CampaignContextProvider = ({ children }) => {
         return newObj;
       })
     );
-    const art = await axios.get(`${process.env.REACT_APP_API_URI}/artist/all`);
+    const art = await API_ARTIST.get(`/all`);
     setArtists(art.data);
   }
 
   async function fetchCampaign(id) {
-    return await axios.get(
-      `${process.env.REACT_APP_API_URI}/campaigns/single/`,
-      {
-        params: { id },
-      }
-    );
+    return await API_CAMPAIGN.get(`/campaigns/single/`, {
+      params: { id },
+    });
   }
 
   useEffect(() => {

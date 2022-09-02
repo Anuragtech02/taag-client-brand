@@ -9,6 +9,7 @@ import logo from "../../assets/icons/logo.svg";
 import { LinearProgress } from "@mui/material";
 import Logo from "../../components/Logo/Logo";
 import { showAlert } from "../../utils";
+import { API_ALL } from "../../utils/API";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,51 +28,13 @@ const Register = () => {
     });
   }
 
-  // const { setCurrentUser } = useContext(AuthContext);
-
-  // async function handleSubmit(e) {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.REACT_APP_API_URI}/auth/login/`,
-  //       {
-  //         email,
-  //         password,
-  //       }
-  //     );
-
-  //     console.log({ decoded: decodeToken(response.data.token), response });
-
-  //     if (response.status === 200) {
-  //       let decoded = decodeToken(response.data.token);
-  //       setCurrentUser({
-  //         id: decoded.id,
-  //         email: decoded.email,
-  //       });
-  //       localStorage.setItem("token", response.data.token);
-  //       setLoading(false);
-  //       navigate("/");
-  //     } else {
-  //     }
-  //   } catch (error) {
-  //     // console.log("True error", error.response);
-  //     setError(error.response.data.message);
-  //     setLoading(false);
-  //   }
-  // }
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URI}/user/create/`,
-        {
-          ...values,
-        }
-      );
+      const res = await API_ALL.post(`/user/create/`, {
+        ...values,
+      });
       console.log({ res });
       showAlert("success", "You have successfully registered");
       setValues({});

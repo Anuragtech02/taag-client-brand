@@ -2,6 +2,7 @@ import { formatIndianCurrency, KMBFormatter, showAlert } from "..";
 import { Button, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { API_CAMPAIGN } from "../API";
 
 const props = {
   name: "file",
@@ -33,27 +34,21 @@ const handleChangeInvoice = async (e, record) => {
   formData.append("id", window.location.pathname.split("/")[2]);
   formData.append("artistId", record._id);
   console.log(file);
-  const res = await axios.post(
-    `${process.env.REACT_APP_API_URI}/campaigns/upload`,
-    formData
-  );
+  const res = await API_CAMPAIGN.post(`/upload`, formData);
   console.log({ res });
 };
 
 const onClickDownloadInvoice = async (record) => {
-  const res = await axios.get(
-    `${process.env.REACT_APP_API_URI}/campaigns/download-invoice/`,
-    {
-      headers: {
-        authorization: localStorage.getItem("token"),
-      },
-      params: {
-        id: window.location.pathname.split("/")[2],
-        artistId: record._id,
-      },
-      responseType: "blob",
-    }
-  );
+  const res = await API_CAMPAIGN.get(`/download-invoice/`, {
+    headers: {
+      authorization: localStorage.getItem("token"),
+    },
+    params: {
+      id: window.location.pathname.split("/")[2],
+      artistId: record._id,
+    },
+    responseType: "blob",
+  });
   // Create blob link to download
   const url = window.URL.createObjectURL(new Blob([res.data]));
   const link = document.createElement("a");
