@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, createContext, useContext } from "react";
-import { API_ARTIST, API_CAMPAIGN(). } from "../API";
+import { API_ARTIST, API_CAMPAIGN } from "../API";
 import { AuthContext } from "../auth/AuthContext";
 
 export const CampaignContext = createContext({});
@@ -13,7 +13,7 @@ const CampaignContextProvider = ({ children }) => {
 
   async function fetchCampaigns(status = "all") {
     console.log({ currentUser });
-    const res = await API_CAMPAIGN()..get(`/brand`, {
+    const res = await API_CAMPAIGN().get(`/brand`, {
       params: {
         brand: currentUser.email,
       },
@@ -35,7 +35,7 @@ const CampaignContextProvider = ({ children }) => {
   }
 
   async function fetchCampaign(id) {
-    return await API_CAMPAIGN()..get(`/campaigns/single/`, {
+    return await API_CAMPAIGN().get(`/campaigns/single/`, {
       params: { id },
     });
   }

@@ -7,7 +7,7 @@ import clsx from "clsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { KMBFormatter } from "../../utils";
-import { API_CAMPAIGN(). } from "../../utils/API";
+import { API_CAMPAIGN } from "../../utils/API";
 
 const SelectArtists = () => {
   const columns = [
@@ -101,7 +101,7 @@ const SelectArtists = () => {
 
   async function onClickContinue() {
     console.log({ selectedArtists });
-    const res = await API_CAMPAIGN()..patch(
+    const res = await API_CAMPAIGN().patch(
       `/update/${id}`,
 
       { selectedArtists }
