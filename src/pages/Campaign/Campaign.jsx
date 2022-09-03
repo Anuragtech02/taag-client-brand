@@ -156,8 +156,9 @@ const Campaign = () => {
           disabled: true,
           isBackIconVisible: true,
           name: campaign?.name,
-          
-        },prevRoute:"/"
+          brandName: campaign?.brand?.name,
+        },
+        prevRoute: "/",
       }}
       moreInformationProps={{
         isVisible: true,
