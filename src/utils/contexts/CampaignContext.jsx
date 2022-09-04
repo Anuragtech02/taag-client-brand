@@ -12,7 +12,9 @@ const CampaignContextProvider = ({ children }) => {
   const { currentUser } = useContext(AuthContext);
 
   async function fetchCampaigns(status = "all") {
-    console.log({ currentUser });
+    if (!currentUser) {
+      return;
+    }
     const res = await API_CAMPAIGN().get(`/brand`, {
       params: {
         brand: currentUser.email,
@@ -35,7 +37,7 @@ const CampaignContextProvider = ({ children }) => {
   }
 
   async function fetchCampaign(id) {
-    return await API_CAMPAIGN().get(`/campaigns/single/`, {
+    return await API_CAMPAIGN().get(`/single/`, {
       params: { id },
     });
   }

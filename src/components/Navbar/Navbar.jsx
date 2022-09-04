@@ -113,7 +113,6 @@ const Title = ({
   prevRoute,
   ...remaining
 }) => {
-  console.log(remaining);
   return (
     <div
       style={brandName ? { alignSelf: "flex-end" } : {}}
