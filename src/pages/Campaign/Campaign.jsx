@@ -8,8 +8,9 @@ import styles from "./Campaign.module.scss";
 import { Box, Tab, Tabs, styled, Skeleton } from "@mui/material";
 import { TabIcon } from "../../assets";
 import { CurrentContext } from "../../utils/contexts";
-import { getCommercial, getROI, KMBFormatter } from "../../utils";
+import { getCommercial, getROI, getYoutubeId, KMBFormatter } from "../../utils";
 import { tableData } from "../../utils/constants";
+import { API_ALL } from "../../utils/API";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -87,6 +88,8 @@ const Campaign = () => {
     setTabIndex(newValue);
     setTab(newValue);
   };
+  const [tableLoading, setTableLoading] = useState(true);
+  const [ytStatsPromises, setYTStatsPromises] = useState([]);
 
   const location = useLocation();
 
@@ -106,6 +109,15 @@ const Campaign = () => {
     console.log({ campaign });
   }, [campaign]);
 
+  async function getYoutubeStats(link) {
+    const ytId = getYoutubeId(link);
+    return await API_ALL().get(`/youtube/getLikes`, {
+      params: {
+        videoId: ytId["1"],
+      },
+    });
+  }
+
   useEffect(() => {
     console.log({ campaign });
     if (campaign.extras?.length) {
@@ -122,11 +134,16 @@ const Campaign = () => {
     }
     if (campaign?.selectedArtists) {
       console.log({ selected: campaign.selectedArtists });
+      let tYtStatsPromises = {};
       setData(
-        campaign.selectedArtists.map((item) =>
-          newSelectionArist(item, campaign)
-        )
+        campaign.selectedArtists.map((item) => {
+          if (item.deliverableLink && item.deliverableLink !== "NA") {
+            tYtStatsPromises[item._id] = getYoutubeStats(item.deliverableLink);
+          }
+          return newSelectionArist(item, campaign);
+        })
       );
+      setYTStatsPromises(tYtStatsPromises);
     }
   }, [campaign]);
 
@@ -140,6 +157,36 @@ const Campaign = () => {
   //     fetchData();
   //   }
   // }, [id]);
+
+  useEffect(() => {
+    async function fetchYTData() {
+      console.log("fetching yt data");
+      setTableLoading(true);
+      const values = await Promise.all(Object.values(ytStatsPromises));
+      console.log({ values });
+      const newSelectedRows = data?.map((item) => {
+        const ytId = getYoutubeId(item.deliverableLink);
+        if (!ytId) {
+          return item;
+        }
+        const ytStats = values.find((val) => val.data.videoId === ytId["1"]);
+        return {
+          ...item,
+          likes: ytStats?.data?.likes,
+          comments: ytStats?.data?.comments,
+          views: ytStats?.data?.views,
+        };
+      });
+      setData(newSelectedRows);
+      setTableLoading(false);
+    }
+    if (
+      Object.values(ytStatsPromises).length &&
+      location.pathname.includes("analytics")
+    ) {
+      fetchYTData();
+    }
+  }, [ytStatsPromises, location.pathname]);
 
   function handleSelectRow(rows) {
     setCampaign({ ...campaign, selectedArtists: rows });
@@ -176,6 +223,7 @@ const Campaign = () => {
               columns={tableData.campaign_analytics.columns}
               data={data}
               onRowSelect={handleSelectRow}
+              tableLoading={tableLoading}
               selectedRows={data || []}
             />
           </div>
