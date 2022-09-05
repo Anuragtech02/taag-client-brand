@@ -51,8 +51,7 @@ const Login = () => {
       if (response.status === 200) {
         let decoded = decodeToken(response.data.token);
         setCurrentUser({
-          id: decoded.id,
-          email: decoded.email,
+          ...decoded,
         });
         localStorage.setItem(TAAG_BRAND_TOKEN, response.data.token);
         setLoading(false);
