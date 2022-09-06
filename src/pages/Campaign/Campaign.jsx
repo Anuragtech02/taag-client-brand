@@ -88,7 +88,7 @@ const Campaign = () => {
     setTabIndex(newValue);
     setTab(newValue);
   };
-  const [tableLoading, setTableLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
   const [ytStatsPromises, setYTStatsPromises] = useState([]);
 
   const location = useLocation();
