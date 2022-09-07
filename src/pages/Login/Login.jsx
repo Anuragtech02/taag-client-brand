@@ -41,7 +41,7 @@ const Login = () => {
 
     try {
       const response = await API_AUTH().post(`/login/`, {
-        email: values?.email,
+        email: values?.email?.toLowerCase(),
         password: values?.password,
         userType: "brand",
       });

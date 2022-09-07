@@ -15,11 +15,13 @@ const CampaignContextProvider = ({ children }) => {
     if (!currentUser) {
       return;
     }
+    console.log(currentUser);
     const res = await API_CAMPAIGN().get(`/brand`, {
       params: {
         brand: currentUser.email,
       },
     });
+    console.log({ res });
     setCampaigns(
       res.data?.map((campaign) => {
         let newObj = { ...campaign };
