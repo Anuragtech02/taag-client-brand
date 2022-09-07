@@ -15,7 +15,6 @@ const CampaignContextProvider = ({ children }) => {
     if (!currentUser) {
       return;
     }
-    console.log(currentUser);
     const res = await API_CAMPAIGN().get(`/brand`, {
       params: {
         brand: currentUser.email,
