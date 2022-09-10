@@ -135,16 +135,8 @@ export const tableData = {
           title: "Avg. Views",
           dataIndex: "averageViews",
           key: "averageViews",
-          render: (views, record) => (
-            <span>
-              {KMBFormatter(
-                record.deliverable?.includes("YT")
-                  ? record.youtube?.averageViews
-                  : record.instagram?.averageViews
-              )}
-            </span>
-          ),
-          // sorter: (a, b) => a - b,
+          render: (views, record) => <span>{KMBFormatter(views)}</span>,
+          sorter: (a, b) => a.averageViews - b.averageViews,
           // sortDirections: ["descend", "ascend"],
         },
         {
