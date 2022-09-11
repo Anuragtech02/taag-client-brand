@@ -29,10 +29,6 @@ const Login = () => {
     });
   }
 
-  useEffect(() => {
-    console.log(values);
-  });
-
   const { setCurrentUser } = useContext(AuthContext);
 
   async function handleSubmit(e) {
@@ -45,8 +41,6 @@ const Login = () => {
         password: values?.password,
         userType: "brand",
       });
-
-      console.log({ decoded: decodeToken(response.data.token), response });
 
       if (response.status === 200) {
         let decoded = decodeToken(response.data.token);
