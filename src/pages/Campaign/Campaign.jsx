@@ -8,7 +8,13 @@ import styles from "./Campaign.module.scss";
 import { Box, Tab, Tabs, styled, Skeleton } from "@mui/material";
 import { TabIcon } from "../../assets";
 import { CurrentContext } from "../../utils/contexts";
-import { getCommercial, getROI, getYoutubeId, KMBFormatter } from "../../utils";
+import {
+  getCommercial,
+  getCPVBrand,
+  getROI,
+  getYoutubeId,
+  KMBFormatter,
+} from "../../utils";
 import { tableData } from "../../utils/constants";
 import { API_ALL } from "../../utils/API";
 
@@ -56,9 +62,7 @@ function newSelectionArist(item, campaign) {
       : 0,
     deliverable: item.deliverable || campaign.deliverable || "NA",
     brandCommercial,
-    cpvBrand: (parseInt(brandCommercial) / parseInt(item.views) || 0).toFixed(
-      2
-    ),
+    cpvBrand: getCPVBrand(item, brandCommercial, campaign?.deliverable),
     gender: item.gender,
     location: item.location,
     languages: item.languages,

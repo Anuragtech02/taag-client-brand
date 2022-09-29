@@ -124,3 +124,31 @@ export function formatIndianCurrency(amount) {
 
   return res;
 }
+
+export function getCPVBrand(item, brandCommercial, deliverable) {
+  let views = 0;
+
+  switch (deliverable) {
+    case "YTVideo":
+    case "YTShorts":
+      views = parseInt(item.youtube?.averageViews) || 0;
+      break;
+    case "IGStatic":
+    case "IGReel":
+    case "IGVideo":
+      views = parseInt(item.instagram?.averageViews) || 0;
+      break;
+    case "IGStory":
+      views = parseInt(item.instagram?.averageViews) || 0;
+      break;
+    default:
+      views = 0;
+  }
+
+  let finalValue = (parseInt(brandCommercial) / parseInt(views) || 0).toFixed(
+    2
+  );
+
+  // Let it be double equals (==)
+  return finalValue == Infinity ? "NA" : finalValue;
+}

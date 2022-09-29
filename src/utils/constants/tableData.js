@@ -150,7 +150,6 @@ export const tableData = {
           title: "Brand Commercial",
           dataIndex: "brandCommercial",
           key: "brandCommercial",
-          editable: true,
           render: (text) => <span>{formatIndianCurrency(text)}</span>,
           sorter: (a, b) =>
             parseInt(a.brandCommercial) - parseInt(b.brandCommercial),
