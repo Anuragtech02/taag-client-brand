@@ -73,7 +73,7 @@ function newSelectionArist(item, campaign) {
     deliverableLink: item.deliverableLink || "NA",
     views: item.views || "NA",
     comments: item.comments || "NA",
-    roi: getROI(item),
+    roi: getROI(item, brandCommercial),
   };
   if (campaign.extras?.length) {
     campaign.extras.forEach((it) => {
@@ -217,7 +217,7 @@ const Campaign = () => {
         brandAmount: campaign?.brandAmount,
         totalAverageViews: KMBFormatter(campaign?.totalAverageViews || 0),
         totalCreator: data?.length.toString() || "0",
-        averageROI: campaign?.averageROI || "0.0",
+        averageROI: campaign?.averageROI?.toFixed(2) || "0.0",
       }}
     >
       <div className={styles.tablesContainer}>
