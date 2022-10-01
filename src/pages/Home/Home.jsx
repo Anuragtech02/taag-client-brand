@@ -125,7 +125,7 @@ const Home = () => {
       dataIndex: "brand",
       key: "open",
       isObj: false,
-      render: (brand) => <span>{brand?.poc?.name}</span>,
+      render: (brand) => <span>{brand?.poc?.id || brand?.poc?.name}</span>,
       // width: "20%",
       // searchable: true,
     },
