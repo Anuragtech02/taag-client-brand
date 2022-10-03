@@ -33,7 +33,6 @@ const Login = () => {
 
   useEffect(() => {
     async function confirmToken() {
-      console.log({ uri: window.location.href, id });
       try {
         const res = await API_AUTH().get(`/verify-reset-token/`, {
           params: {
@@ -44,10 +43,12 @@ const Login = () => {
         if (res.status === 200) {
           setIsValidURI(true);
         } else {
+          setLoading(false);
           return showAlert("error", "Invalid Reset Link");
         }
       } catch (error) {
-        showAlert("error", error.message);
+        setLoading(false);
+        showAlert("error", error.response?.data?.message);
       }
     }
     if (token && id) {
@@ -61,6 +62,7 @@ const Login = () => {
 
     if (token && id) {
       if (values.confirmPassword !== values.newPassword) {
+        setLoading(false);
         return showAlert("error", "Passwords do not match");
       }
       try {
@@ -75,7 +77,8 @@ const Login = () => {
           navigate("/login");
         }, 1000);
       } catch (error) {
-        return showAlert("error", error.message);
+        setLoading(false);
+        return showAlert("error", error.response?.data?.message);
       }
     }
 
@@ -94,7 +97,8 @@ const Login = () => {
         }
       } catch (error) {
         // console.log("True error", error.response);
-        setError(error.message);
+        // setError(error.message);
+        showAlert("error", error.response?.data?.message);
         setLoading(false);
       }
     }
@@ -140,8 +144,8 @@ const Login = () => {
             {token && id ? "Submit" : "Send Link"}
           </Button>
         </div>
-        {!loading && error && <span className={styles.error}>{error}</span>}
-        {!error && loading && <LinearProgress className={styles.loading} />}
+        {/* {!loading && error && <span className={styles.error}>{error}</span>} */}
+        {loading && <LinearProgress className={styles.loading} />}
       </form>
     </div>
   );
