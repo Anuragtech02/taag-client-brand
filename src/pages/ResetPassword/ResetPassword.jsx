@@ -9,6 +9,9 @@ import { LinearProgress } from "@mui/material";
 import Logo from "../../components/Logo/Logo";
 import { showAlert } from "../../utils";
 import { API_AUTH } from "../../utils/API";
+import { icons } from "../../assets";
+
+const { back } = icons;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,8 +20,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isValidURI, setIsValidURI] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const { token, id } = useParams();
+  const { token } = useParams();
 
   function handleChange(e) {
     const { id, value, name } = e.target;
@@ -33,41 +37,42 @@ const Login = () => {
 
   useEffect(() => {
     async function confirmToken() {
+      // console.log({ uri: window.location.href, id });
       try {
         const res = await API_AUTH().get(`/verify-reset-token/`, {
           params: {
             uri: window.location.href,
-            id,
+            token,
           },
         });
         if (res.status === 200) {
           setIsValidURI(true);
         } else {
-          setLoading(false);
           return showAlert("error", "Invalid Reset Link");
         }
       } catch (error) {
-        setLoading(false);
-        showAlert("error", error.response?.data?.message);
+        showAlert("error", error.message);
       }
     }
-    if (token && id) {
+    if (token) {
+      let tempUser = decodeToken(token);
+      setUser(tempUser);
       confirmToken();
     }
-  }, [token, id]);
+  }, [token]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
-    if (token && id) {
+    if (token && user?.userId && isValidURI) {
       if (values.confirmPassword !== values.newPassword) {
         setLoading(false);
         return showAlert("error", "Passwords do not match");
       }
       try {
         const res = await API_AUTH().post(`/reset-password/`, {
-          email: values.email,
+          email: user.email,
           newPassword: values.newPassword,
           userType: "brand",
         });
@@ -78,11 +83,11 @@ const Login = () => {
         }, 1000);
       } catch (error) {
         setLoading(false);
-        return showAlert("error", error.response?.data?.message);
+        return showAlert("error", error.message);
       }
     }
 
-    if (!token && !id && !isValidURI) {
+    if (!token && !user?.userId && !isValidURI) {
       try {
         const response = await API_AUTH().post(`/request-password-reset/`, {
           email: values?.email,
@@ -90,33 +95,42 @@ const Login = () => {
         });
 
         if (response.status === 200) {
+          showAlert("success", "Reset Link sent on your email");
           setLoading(false);
-          return showAlert("success", "Reset Link sent");
           // navigate("/");
         } else {
         }
       } catch (error) {
         // console.log("True error", error.response);
-        // setError(error.message);
-        showAlert("error", error.response?.data?.message);
+        setError(error.response.data.message);
         setLoading(false);
       }
     }
   }
 
+  useEffect(() => {
+    console.log({ values });
+  });
   return (
     <div className={styles.container}>
       <Logo withText />
       <form onSubmit={handleSubmit}>
-        <InputField
-          id="email"
-          label="Email"
-          required
-          value={values?.email}
-          onChange={handleChange}
-          type="text"
-          disabled={loading}
-        />
+        <span className={styles.backToLogin} onClick={() => navigate("/login")}>
+          <img src={back} alt="back" />
+          <p>Back to Login</p>
+        </span>
+        {!isValidURI && (
+          <InputField
+            id="email"
+            label="Email"
+            required
+            value={values?.email}
+            onChange={handleChange}
+            type="email"
+            disabled={loading}
+          />
+        )}
+
         {isValidURI && (
           <InputField
             id="newPassword"
@@ -141,11 +155,11 @@ const Login = () => {
         )}
         <div className={styles.buttons}>
           <Button title="Submit" type="submit" disabled={loading}>
-            {token && id ? "Submit" : "Send Link"}
+            {token && user?.userId ? "Submit" : "Send Link"}
           </Button>
         </div>
-        {/* {!loading && error && <span className={styles.error}>{error}</span>} */}
-        {loading && <LinearProgress className={styles.loading} />}
+        {!loading && error && <span className={styles.error}>{error}</span>}
+        {!error && loading && <LinearProgress className={styles.loading} />}
       </form>
     </div>
   );
